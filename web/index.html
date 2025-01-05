@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Состояние сети</title>
+</head>
+<body>
+    <h1>Результаты проверки</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>IP-адрес</th>
+                <th>Статус</th>
+                <th>Время проверки</th>
+            </tr>
+        </thead>
+        <tbody id="report"></tbody>
+    </table>
+
+    <script>
+        async function fetchReport() {
+            const response = await fetch('/report?filter=unavailable');
+            const data = await response.json();
+            const tableBody = document.getElementById('report');
+            tableBody.innerHTML = '';
+
+            for (const [ip, status] of Object.entries(data)) {
+                const row = `<tr><td>${ip}</td><td>${status.status}</td><td>${status.last_update}</td></tr>`;
+                tableBody.innerHTML += row;
+            }
+        }
+
+        setInterval(fetchReport, 30000); // Обновление каждые 30 секунд
+        fetchReport(); // Первый запуск
+    </script>
+</body>
+</html>
